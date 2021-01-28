@@ -118,8 +118,8 @@ function draw(){
     if(s===0){
         ctx.strokeStyle = 'green'
         ctx.lineWidth = 5
-        ctx.strokeRect((c.width/2)-120, 450, 230, 50)
-        ctx.fillText('CLICK TO BEGIN', (c.width/2)-100, 482)
+        ctx.strokeRect((c.width/2)-90, 450, 170, 50)
+        ctx.fillText('CLICK TO BEGIN', (c.width/2)-80, 482, 150)
     }
 
 }
