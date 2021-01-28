@@ -11,6 +11,7 @@ function init(){
     rx = random(0, c.width-40)
     rw = random(40, 75)
     h = getHighScore()
+    x = random(0, c.width)
 
     window.requestAnimationFrame(gameLoop)
 }
@@ -42,18 +43,19 @@ function getHighScore(){
     return 0
 }
 
-let x = 0
+
+const random = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+let x
 let d = 1
-let s = 5
+let s = 0
 let b = 0
 let rx
 let rw
 let h
 let m = 0
-
-const random = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 document.addEventListener('click', flip => {
     d*=-1
@@ -69,7 +71,7 @@ document.addEventListener('click', flip => {
             h=b
         }
         document.cookie = `h=${h}`
-    } else {
+    } else if(s!=0){
         m++
         if(m > 5){
             rx = random(0, c.width-40)
@@ -78,6 +80,8 @@ document.addEventListener('click', flip => {
             m=0
             s=5
         }
+    } else if(s===0){
+        s = 5
     }
 
 })
@@ -87,6 +91,8 @@ function draw(){
     ctx.fillStyle = 'black'
     ctx.fillRect(0, 0, c.width, c.height)
 
+    if(s===0){ctx.filter = 'blur(5px)'}
+    
     ctx.fillStyle = 'red'
     ctx.fillRect(rx, 0, rw, c.height)
 
@@ -99,10 +105,20 @@ function draw(){
     }
     ctx.fillStyle = 'green'
     ctx.fillRect(x, 0, 5, c.height)
+
+    ctx.filter = 'blur(0px)'
     ctx.font = 'bold 20px Verdana'
     ctx.fillText(`CURRENT SCORE: ${b}`, 20, 50)
     ctx.fillText(`HIGHSCORE: ${h}`, 20, 80)
     ctx.fillText(`MISSES: ${m}`, 20, 110)
     ctx.fillText(`SPEED: ${s}`, 20, 140)
     x+=s*d
+
+    if(s===0){
+        ctx.strokeStyle = 'green'
+        ctx.lineWidth = 5
+        ctx.strokeRect(780, 450, 230, 50)
+        ctx.fillText('CLICK TO BEGIN', 800, 482)
+    }
+
 }
