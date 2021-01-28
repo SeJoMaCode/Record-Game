@@ -119,7 +119,7 @@ function draw(){
         ctx.strokeStyle = 'green'
         ctx.lineWidth = 5
         ctx.strokeRect((c.width/2)-120, 450, 230, 50)
-        ctx.fillText('CLICK TO BEGIN', (c.width)/2-100, 482)
+        ctx.fillText('CLICK TO BEGIN', (c.width/2)-100, 482)
     }
 
 }
