@@ -59,6 +59,9 @@ let m = 0
 
 document.addEventListener('click', flip => {
     d*=-1
+    if(s===0){
+        s =5
+    }
     if(x >= rx && x <= rx+rw){
         b++
         m=0
@@ -80,8 +83,6 @@ document.addEventListener('click', flip => {
             m=0
             s=5
         }
-    } else if(s===0){
-        s = 5
     }
 
 })
@@ -117,8 +118,8 @@ function draw(){
     if(s===0){
         ctx.strokeStyle = 'green'
         ctx.lineWidth = 5
-        ctx.strokeRect(780, 450, 230, 50)
-        ctx.fillText('CLICK TO BEGIN', 800, 482)
+        ctx.strokeRect((c.width/2)-120, 450, 230, 50)
+        ctx.fillText('CLICK TO BEGIN', (c.width)/2-100, 482)
     }
 
 }
