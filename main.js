@@ -81,7 +81,7 @@ document.addEventListener('click', flip => {
             rw = random(40, 75)
             b=0
             m=0
-            s=5
+            s=0
         }
     }
 
