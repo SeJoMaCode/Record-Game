@@ -89,12 +89,12 @@ document.addEventListener('click', flip => {
 
 
 function draw(){
-    ctx.fillStyle = 'black'
+    ctx.fillStyle = '#BF2200'
     ctx.fillRect(0, 0, c.width, c.height)
 
     if(s===0){ctx.filter = 'blur(5px)'}
     
-    ctx.fillStyle = 'red'
+    ctx.fillStyle = '#F70000'
     ctx.fillRect(rx, 0, rw, c.height)
 
     if(x > c.width){
@@ -104,7 +104,7 @@ function draw(){
         d*=-1
         x = 0
     }
-    ctx.fillStyle = 'green'
+    ctx.fillStyle = '#F8DA00'
     ctx.fillRect(x, 0, 5, c.height)
 
     ctx.filter = 'blur(0px)'
@@ -116,7 +116,7 @@ function draw(){
     x+=s*d
 
     if(s===0){
-        ctx.strokeStyle = 'green'
+        ctx.strokeStyle = '#F8DA00'
         ctx.lineWidth = 5
         ctx.strokeRect((c.width/2)-90, 450, 170, 50)
         ctx.fillText('CLICK TO BEGIN', (c.width/2)-80, 482, 150)
