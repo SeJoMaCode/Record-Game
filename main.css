@@ -9,3 +9,14 @@ canvas {
     margin-right: auto;
     display: block;
 }
+
+#Url {
+    position: absolute;
+    bottom: 0px;
+    right: 5px;
+    height: 20px;
+    width: 500px;
+    background: transparent;
+    border: 2px solid black;
+    border-radius: 4px;
+}

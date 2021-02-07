@@ -9,10 +9,11 @@ function init(){
     ctx = c.getContext('2d')
     resize()
 
-    rx = random(-c.height/2, c.height/2-40)
+    rx = random(-smallestDim/2, smallestDim/2-40)
     rw = random(50, 75)
     h = getHighScore()
-    x = random(-c.height/2, c.height/2-5)
+    x = random(-smallestDim/2, smallestDim/2-5)
+    background.src = './images/background.jpg'
     play.src = './images/play.png'
     pause.src = './images/pause.png'
     next.src = './images/next.png'
@@ -30,9 +31,16 @@ function gameLoop(timeStamp){
     window.requestAnimationFrame(gameLoop)
 }
 
+let smallestDim
+
 function resize(){
     ctx.canvas.width  = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
+    if(c.width<=c.height){
+        smallestDim = c.width
+    } else {
+        smallestDim = c.height
+    }
 }
 
 function getHighScore(){
@@ -64,14 +72,15 @@ let h
 let m = 0
 let a = 0
 let ytApiKey = "AIzaSyC19qX36WyFSiTJ1JHYVYMXEzz6y2HPoqA"
+let newList = document.getElementById("Url")
 
 document.addEventListener('click', click => {
     if(s===0){
-        s=2
-        m--
+        newList.style.visibility = "visible"
+        s=5
         player.playVideo()
     }
-    if(click.clientY >= c.height-50){
+    if(click.clientY >= c.height-80 && click.clientY <= c.height-20){
         if(click.clientX >= c.width-50){
             player.nextVideo()
         } else if(click.clientX >= c.width-100){
@@ -80,6 +89,26 @@ document.addEventListener('click', click => {
             player.playVideo()
         } else if(click.clientX >= c.width-200){
             player.previousVideo()
+        } else if (click.clientX >= c.width-250){
+            playerLoaded = false
+            player.cuePlaylist({
+                listType:'playlist',
+                list: getID(newList.value)
+            })
+            setTimeout(() => {
+                player.loadPlaylist({
+                    listType:'playlist',
+                    list: getID(newList.value)
+                })
+                setTimeout(() => {
+                    player.setShuffle(true)
+                    player.setLoop(true)
+                    player.nextVideo()
+                    player.playVideo()
+                    playerLoaded = true
+
+                }, 1000)
+            }, 1000);
         }
     }
 })
@@ -100,7 +129,7 @@ function flip() {
         if(s < 10){
             s+=1
         }
-        rx = random(-c.height/2, c.height/2-40)
+        rx = random(-smallestDim/2, smallestDim/2-40)
         rw = random(50, 75)
         if(b > h){
             h=b
@@ -109,11 +138,11 @@ function flip() {
     } else if(s!=0){
         m++
         if(m > 1){
-            rx = random(-c.height/2, c.height/2-40)
+            rx = random(-smallestDim/2, smallestDim/2-40)
             rw = random(50, 75)
             b=0
             m=0
-            s=2
+            s=5
         }
     }
 
@@ -129,7 +158,7 @@ function onYouTubePlayerAPIReady() {
         playerVars: 
         {
             listType:'playlist',
-            list: getID('https://www.youtube.com/playlist?list=PL6NdkXsPL07KiewBDpJC1dFvxEubnNOp1'),
+            list: 'PL6NdkXsPL07KiewBDpJC1dFvxEubnNOp1'
         },
         events: {
             onReady: function (e) {
@@ -182,6 +211,7 @@ function wrapText(text, x, y, maxWidth, lineHeight) {
 let videoId
 let _videoId
 let data
+let background = new Image
 let album = new Image
 let play = new Image
 let pause = new Image
@@ -203,13 +233,17 @@ function draw(){
         }
     }
 
-    ctx.fillStyle = '#f07030'
-    ctx.fillRect(0, 0, c.width, c.height)
-    
-    ctx.drawImage(last, c.width-200, c.height-50)
-    ctx.drawImage(play, c.width-150, c.height-50)
-    ctx.drawImage(pause, c.width-100, c.height-50)
-    ctx.drawImage(next, c.width-50, c.height-50)
+    ctx.drawImage(background, 0, 0, c.width, c.height)    
+    ctx.drawImage(last, c.width-200, c.height-80)
+    ctx.drawImage(play, c.width-150, c.height-80)
+    ctx.drawImage(pause, c.width-100, c.height-80)
+    ctx.drawImage(next, c.width-50, c.height-80)
+
+    ctx.save()
+    ctx.translate(c.width-250, c.height-80)
+    ctx.rotate(-90*Math.PI/180)
+    ctx.drawImage(play,-50,0)
+    ctx.restore()
 
     ctx.translate(c.width/2,c.height/2)
     ctx.save()
@@ -219,21 +253,21 @@ function draw(){
     if(s!=0){a+=Math.PI/180}
     
     ctx.beginPath();
-    ctx.arc(0, 0, c.height/2, 0, Math.PI * 2)
+    ctx.arc(0, 0, smallestDim/2, 0, Math.PI * 2)
     ctx.clip()
 
     ctx.fillStyle = '#000000'
-    ctx.fillRect(-c.height/2, -c.height/2, c.height, c.height)
+    ctx.fillRect(-smallestDim/2, -smallestDim/2, smallestDim, smallestDim)
 
     ctx.fillStyle = '#b330f0'
     ctx.fillRect(rx, (-c.width/2)-500, rw, c.width+1000)
 
-    if(x > c.height/2){
+    if(x > smallestDim/2){
         d*=-1
-        x = c.height/2
-    } else if( x < -c.height/2){
+        x = smallestDim/2
+    } else if( x < -smallestDim/2){
         d*=-1
-        x = -c.height/2
+        x = -smallestDim/2
     }
     ctx.fillStyle = '#6df030'
     ctx.fillRect(x, (-c.width/2)-500, 20, c.width+1000)
@@ -241,26 +275,25 @@ function draw(){
     for(let i = 0; i <= 7; i++){
         ctx.strokeStyle = '#454545'
         ctx.beginPath();
-        ctx.arc(0, 0, c.height/6+i*35, 0, Math.PI * 2)
+        ctx.arc(0, 0, smallestDim/6+i*35, 0, Math.PI * 2)
         ctx.stroke()
     }
 
     ctx.beginPath()
-    ctx.arc(0, 0, c.height/6, 0, Math.PI * 2)
+    ctx.arc(0, 0, smallestDim/6, 0, Math.PI * 2)
     ctx.clip()
 
     ctx.fillStyle = '#000000'
     let albumScale = 10/13
-    ctx.fillRect(-c.height/6, -c.height/6, c.height/3, c.height/3)
+    ctx.fillRect(-smallestDim/6, -smallestDim/6, smallestDim/3, smallestDim/3)
     ctx.drawImage(album, -album.width*albumScale/2, -album.height*albumScale/2, album.width*albumScale, album.height*albumScale)
     
-    ctx.fillStyle = '#000000'
     ctx.strokeStyle = '#ffffff'
 
     ctx.font = 'bold 20px Verdana'
     ctx.textAlign = "center"
     if(title){
-        wrapText(title, 0, -50, c.height/4, 24)
+        wrapText(title, 0, -50, smallestDim/4, 24)
     }
 
     ctx.restore()
@@ -272,6 +305,7 @@ function draw(){
     x+=s*d
 
     if(s===0){
+        newList.style.visibility = "hidden"
         ctx.fillRect(0,0,c.width,c.height)
         ctx.textAlign = "center"
         ctx.translate(c.width/2,c.height/2)
