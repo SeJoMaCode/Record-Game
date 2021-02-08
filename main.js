@@ -36,10 +36,10 @@ let smallestDim
 function resize(){
     ctx.canvas.width  = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
-    if(c.width<=c.height){
+    if(c.width<=c.height - 60){
         smallestDim = c.width
     } else {
-        smallestDim = c.height
+        smallestDim = c.height - 60
     }
 }
 
@@ -80,7 +80,7 @@ document.addEventListener('click', click => {
         s=5
         player.playVideo()
     }
-    if(click.clientY >= c.height-80 && click.clientY <= c.height-20){
+    if(click.clientY >= c.height-80 && click.clientY <= c.height-25){
         if(click.clientX >= c.width-50){
             player.nextVideo()
         } else if(click.clientX >= c.width-100){
@@ -89,7 +89,9 @@ document.addEventListener('click', click => {
             player.playVideo()
         } else if(click.clientX >= c.width-200){
             player.previousVideo()
-        } else if (click.clientX >= c.width-250){
+        }
+    } else if(click.clientY >= c.height-25){
+        if (click.clientX >= c.width-537 && click.clientX <= c.width-513){
             playerLoaded = false
             player.cuePlaylist({
                 listType:'playlist',
@@ -112,6 +114,7 @@ document.addEventListener('click', click => {
         }
     }
 })
+
 document.addEventListener("keydown", event => {
     if (event.isComposing || event.code === 229) {
       return;
@@ -208,6 +211,42 @@ function wrapText(text, x, y, maxWidth, lineHeight) {
     ctx.fillText(line, x, y);
 }
 
+function roundRect(ctx, x, y, width, height, radius, fill, stroke, sWidth) {
+    if (typeof stroke === 'undefined') {
+        stroke = true;
+    }
+    if (typeof radius === 'undefined') {
+        radius = 5;
+    }
+    if (typeof radius === 'number') {
+        radius = {tl: radius, tr: radius, br: radius, bl: radius};
+    } else {
+        let defaultRadius = {tl: 0, tr: 0, br: 0, bl: 0};
+        for (let side in defaultRadius) {
+            radius[side] = radius[side] || defaultRadius[side];
+        }
+    }
+    ctx.beginPath();
+    ctx.moveTo(x + radius.tl, y);
+    ctx.lineTo(x + width - radius.tr, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+    ctx.lineTo(x + width, y + height - radius.br);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+    ctx.lineTo(x + radius.bl, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+    ctx.lineTo(x, y + radius.tl);
+    ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+    ctx.closePath();
+    if (fill) {
+        ctx.fill();
+    }
+    if (stroke) {
+        ctx.lineWidth = sWidth;
+        ctx.stroke();
+    }
+  
+  }
+
 let videoId
 let _videoId
 let data
@@ -239,10 +278,18 @@ function draw(){
     ctx.drawImage(pause, c.width-100, c.height-80)
     ctx.drawImage(next, c.width-50, c.height-80)
 
+
+    roundRect(ctx, c.width-537, c.height-25, 24, 24, 4, false, true, 2)
+   
     ctx.save()
-    ctx.translate(c.width-250, c.height-80)
-    ctx.rotate(-90*Math.PI/180)
-    ctx.drawImage(play,-50,0)
+    ctx.translate(c.width-537, c.height-25)
+
+    ctx.beginPath()
+    ctx.moveTo(7, 16)
+    ctx.lineTo(17, 16)
+    ctx.lineTo(12, 8)
+    ctx.closePath()
+    ctx.stroke()
     ctx.restore()
 
     ctx.translate(c.width/2,c.height/2)
