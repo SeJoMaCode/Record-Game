@@ -181,13 +181,27 @@ function getID(str) {
     return str[str.length - 1]
 }
 
-function httpGet(url)
-{
-    var xmlHttp = new XMLHttpRequest()
-    xmlHttp.open( "GET", url, false )
-    xmlHttp.send( null )
-    return xmlHttp.responseText
+function httpGet(url) {
+    return new Promise((resolve, reject) => {
+        var xmlHttp = new XMLHttpRequest()
+        xmlHttp.open( "GET", url)
+        xmlHttp.send( null )
+        xmlHttp.addEventListener('readystatechange', readystatechange => {
+            if(xmlHttp.readyState === XMLHttpRequest.DONE) {
+                if(199 < xmlHttp.status && xmlHttp.status < 300) {
+                    resolve(xmlHttp.responseText); 
+                }
+                reject(); 
+            } 
+        }); 
+    }); 
 }
+
+const httpGet_standin = url => {
+    return new Promise((resolve, reject) => {
+        window.setTimeout(() => reject(), 4000); 
+    }); 
+}; 
 
 function wrapText(text, x, y, maxWidth, lineHeight) {
     var words = text.split(' ');
@@ -263,12 +277,18 @@ function draw(){
     if(playerLoaded){
         videoId = getID(player.getVideoUrl())
         if(videoId!=_videoId){
-            data = JSON.parse(httpGet("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + videoId + "&key=" + ytApiKey))
-            album.crossOrigin = 'Anonymous';
-            album.src = googleProxyURL + data.items[0].snippet.thumbnails.standard.url
-            title = data.items[0].snippet.title
-
             _videoId = videoId
+            const time_p = Date.now(); 
+            httpGet("https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + videoId + "&key=" + ytApiKey).then(response => {
+                data = JSON.parse(response); 
+                
+                album.crossOrigin = 'anonymous';
+                album.src = googleProxyURL + data.items[0].snippet.thumbnails.standard.url
+                title = data.items[0].snippet.title                
+            }, () => {
+                console.log('UNABLE TO CONNECT TO YOUTUBE API'); 
+            }); 
+            console.log('REQUEST TIME: ', Date.now() - time_p); 
         }
     }
 
