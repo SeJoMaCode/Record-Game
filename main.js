@@ -18,6 +18,7 @@ function init(){
     pause.src = './images/pause.png'
     next.src = './images/next.png'
     last.src = './images/last.png'
+    needle.src = './images/needle.png'
 
     onYouTubePlayerAPIReady()
     window.requestAnimationFrame(gameLoop)
@@ -270,8 +271,11 @@ let play = new Image
 let pause = new Image
 let next = new Image
 let last = new Image
+let needle = new Image
 let title
 let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url='
+let angle = 11
+let percentDone
 
 function draw(){
     if(playerLoaded){
@@ -290,7 +294,9 @@ function draw(){
             }); 
             console.log('REQUEST TIME: ', Date.now() - time_p); 
         }
+        percentDone = player.getCurrentTime()/player.getDuration()
     }
+
 
     ctx.drawImage(background, 0, 0, c.width, c.height)    
     ctx.drawImage(last, c.width-200, c.height-80)
@@ -339,10 +345,11 @@ function draw(){
     ctx.fillStyle = '#6df030'
     ctx.fillRect(x, (-c.width/2)-500, 20, c.width+1000)
 
-    for(let i = 0; i <= 7; i++){
+    for(let i = 0; i <= 45; i++){
         ctx.strokeStyle = '#454545'
+        ctx.lineWidth = 0.5
         ctx.beginPath();
-        ctx.arc(0, 0, smallestDim/6+i*35, 0, Math.PI * 2)
+        ctx.arc(0, 0, smallestDim/6+50+i*4, 0, Math.PI * 2)
         ctx.stroke()
     }
 
@@ -366,6 +373,13 @@ function draw(){
     ctx.restore()
     ctx.resetTransform()
 
+    angle = percentDone * (33 - 11) + 11
+    ctx.translate(c.width-280, 120)
+    ctx.rotate(angle*Math.PI/180)
+    ctx.drawImage(needle, -128, -70)
+
+    ctx.resetTransform()
+
     ctx.fillStyle = '#000000'
     ctx.font = 'bold 20px Verdana'
 
@@ -381,6 +395,8 @@ function draw(){
         ctx.lineWidth = 5
         ctx.strokeRect(0-90, -25, 180, 50)
         ctx.fillText('CLICK TO BEGIN', 0, 7, 150)
+        ctx.textAlign = "right"
+        ctx.fillText('1.2.0',c.width/2-5, c.height/2-10)
     }
 
     ctx.resetTransform()
