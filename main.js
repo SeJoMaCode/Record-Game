@@ -2,6 +2,8 @@ let c;
 let ctx;
 let colors
 
+let version = '1.2.1'
+
 window.onload = init;
 
 function init(){
@@ -364,7 +366,7 @@ function draw(){
     ctx.beginPath()
     ctx.arc(0, 0, smallestDim/6, 0, Math.PI * 2)
     ctx.clip()
-    
+
     ctx.drawImage(album, -album.width/2, -album.height/2)
     
     ctx.strokeStyle = '#ffffff'
@@ -410,7 +412,7 @@ function draw(){
         ctx.strokeRect(0-90, -25, 180, 50)
         ctx.fillText('CLICK TO BEGIN', 0, 7, 150)
         ctx.textAlign = "right"
-        ctx.fillText('1.2.0',c.width/2-5, c.height/2-10)
+        ctx.fillText(version,c.width/2-5, c.height/2-10)
     }
 
     ctx.resetTransform()
