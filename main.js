@@ -11,7 +11,7 @@ function init(){
 
     rx = random(-smallestDim/2, smallestDim/2-40)
     rw = random(50, 75)
-    h = getHighScore()
+    highscore = getCookie('Highscore')
     x = random(-smallestDim/2, smallestDim/2-5)
     background.src = './images/background.jpg'
     play.src = './images/play.png'
@@ -44,18 +44,24 @@ function resize(){
     }
 }
 
-function getHighScore(){
-    let cookie = document.cookie
-    for(let i = 0; i < cookie.length; i++){
-        if(cookie[i] === 'h' && cookie[i+1] === '='){
-            let v = ''
-            for(let j = i+2; j<cookie.length; j++){
-                v+=cookie[j]
-            }
-            return v
-        }
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
     }
-    return 0
+    if(cname=='Highscore'){
+        return 0
+    } else {
+        return ''
+    }
 }
 
 
@@ -69,7 +75,7 @@ let s = 0
 let b = 0
 let rx
 let rw
-let h
+let highscore
 let m = 0
 let a = 0
 let ytApiKey = "AIzaSyC19qX36WyFSiTJ1JHYVYMXEzz6y2HPoqA"
@@ -135,10 +141,10 @@ function flip() {
         }
         rx = random(-smallestDim/2, smallestDim/2-40)
         rw = random(50, 75)
-        if(b > h){
-            h=b
+        if(b > highscore){
+            highscore=b
         }
-        document.cookie = `h=${h}`
+        document.cookie = `Highscore = ${highscore}`
     } else if(s!=0){
         m++
         if(m > 1){
@@ -207,6 +213,7 @@ const httpGet_standin = url => {
 function wrapText(text, x, y, maxWidth, lineHeight) {
     var words = text.split(' ');
     var line = '';
+    ctx.lineWidth = 2
 
     for(var n = 0; n < words.length; n++) {
       var testLine = line + words[n] + ' ';
@@ -345,25 +352,23 @@ function draw(){
     ctx.fillStyle = '#6df030'
     ctx.fillRect(x, (-c.width/2)-500, 20, c.width+1000)
 
-    for(let i = 0; i <= 45; i++){
-        ctx.strokeStyle = '#454545'
+    let rings = Math.floor(smallestDim/17)
+    for(let i = 0; i <= rings; i++){
+        ctx.strokeStyle = '#8f8f8f'
         ctx.lineWidth = 0.5
         ctx.beginPath();
-        ctx.arc(0, 0, smallestDim/6+50+i*4, 0, Math.PI * 2)
+        ctx.arc(0, 0, smallestDim/6+smallestDim/18+i*4, 0, Math.PI * 2)
         ctx.stroke()
     }
 
     ctx.beginPath()
     ctx.arc(0, 0, smallestDim/6, 0, Math.PI * 2)
     ctx.clip()
-
-    ctx.fillStyle = '#000000'
-    let albumScale = 10/13
-    ctx.fillRect(-smallestDim/6, -smallestDim/6, smallestDim/3, smallestDim/3)
-    ctx.drawImage(album, -album.width*albumScale/2, -album.height*albumScale/2, album.width*albumScale, album.height*albumScale)
+    
+    ctx.drawImage(album, -album.width/2, -album.height/2)
     
     ctx.strokeStyle = '#ffffff'
-
+    ctx.fillStyle = '#000000'
     ctx.font = 'bold 20px Verdana'
     ctx.textAlign = "center"
     if(title){
@@ -373,10 +378,19 @@ function draw(){
     ctx.restore()
     ctx.resetTransform()
 
-    angle = percentDone * (33 - 11) + 11
-    ctx.translate(c.width-280, 120)
+    let angleMin = 3
+    let angleMax = 25
+    angle = percentDone * (angleMax - angleMin) + angleMin
+    let scaler = smallestDim/909
+
+    ctx.translate(c.width/2+smallestDim/2, c.height/2-smallestDim/2*3/4)
     ctx.rotate(angle*Math.PI/180)
-    ctx.drawImage(needle, -128, -70)
+    ctx.drawImage(needle, -128*scaler, -70*scaler, needle.width*scaler, needle.height*scaler)
+
+    // ctx.fillStyle = '#FF0000'
+    // ctx.beginPath()
+    // ctx.arc(0,0,5,0,2*Math.PI)
+    // ctx.fill()
 
     ctx.resetTransform()
 
@@ -404,7 +418,7 @@ function draw(){
     ctx.textAlign = "left"
     ctx.fillText(`MISSES: ${m}`, 20, 30)
     ctx.fillText(`CURRENT SCORE: ${b}`, 20, 60)
-    ctx.fillText(`HIGHSCORE: ${h}`, 20, 90)
+    ctx.fillText(`HIGHSCORE: ${highscore}`, 20, 90)
     ctx.fillText(`SPEED: ${s}`, 20, 120)
 
 }
