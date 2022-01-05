@@ -2,7 +2,7 @@ let c;
 let ctx;
 let colors
 
-let version = '1.2.1'
+let version = '1.2.2'
 
 window.onload = init;
 
@@ -139,7 +139,7 @@ function flip() {
         b++
         m=0
         if(s < 10){
-            s+=1
+            s+=0.5
         }
         rx = random(-smallestDim/2, smallestDim/2-40)
         rw = random(50, 75)
@@ -154,7 +154,7 @@ function flip() {
             rw = random(50, 75)
             b=0
             m=0
-            s=5
+            s=1
         }
     }
 
