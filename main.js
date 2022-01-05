@@ -2,7 +2,7 @@ let c;
 let ctx;
 let colors
 
-let version = '1.2.2'
+let version = '1.2.3'
 
 window.onload = init;
 
@@ -86,7 +86,7 @@ let newList = document.getElementById("Url")
 document.addEventListener('click', click => {
     if(s===0){
         newList.style.visibility = "visible"
-        s=5
+        s=1
         player.playVideo()
     }
     if(click.clientY >= c.height-80 && click.clientY <= c.height-25){
@@ -332,7 +332,7 @@ function draw(){
 
     ctx.rotate(a)
     
-    if(s!=0){a+=Math.PI/180}
+    if(s!=0){a+=Math.PI/360}
     
     ctx.beginPath();
     ctx.arc(0, 0, smallestDim/2, 0, Math.PI * 2)
