@@ -170,7 +170,7 @@ function onYouTubePlayerAPIReady() {
         playerVars: 
         {
             listType:'playlist',
-            list: 'PL6NdkXsPL07KiewBDpJC1dFvxEubnNOp1'
+            list: 'RDCLAK5uy_kb7EBi6y3GrtJri4_ZH56Ms786DFEimbM'
         },
         events: {
             onReady: function (e) {
